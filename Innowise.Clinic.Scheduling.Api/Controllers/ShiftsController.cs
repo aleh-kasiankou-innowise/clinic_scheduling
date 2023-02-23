@@ -1,5 +1,7 @@
 using Innowise.Clinic.Scheduling.Api.Controllers.Abstractions;
-using Innowise.Clinic.Scheduling.Api.Dto;
+using Innowise.Clinic.Scheduling.Persistence.Models;
+using Innowise.Clinic.Scheduling.Services.Dto;
+using Innowise.Clinic.Scheduling.Services.ShiftService.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,15 +12,23 @@ namespace Innowise.Clinic.Scheduling.Api.Controllers;
 /// </summary>
 public class ShiftsController : ApiControllerBase
 {
+    private readonly IShiftService _shiftService;
+
+    /// <inheritdoc />
+    public ShiftsController(IShiftService shiftService)
+    {
+        _shiftService = shiftService;
+    }
+
     /// <summary>
     /// Lists all shifts that are registered in the system.
     /// </summary>
     /// <returns>A list of shifts.</returns>
     [HttpGet]
     [Authorize(Roles = "Doctor,Receptionist")]
-    public IActionResult GetShifts()
+    public async Task<ActionResult<IEnumerable<Shift>>> GetShifts()
     {
-        throw new NotImplementedException();
+        return Ok(await _shiftService.GetShifts());
     }
     
     /// <summary>
@@ -27,9 +37,9 @@ public class ShiftsController : ApiControllerBase
     /// <returns>Id of the created shift.</returns>
     [HttpPost]
     [Authorize(Roles = "Receptionist")]
-    public IActionResult CreateShift([FromBody] ShiftDto newShiftInfo)
+    public async Task<ActionResult<Guid>> CreateShift([FromBody] ShiftDto newShiftInfo)
     {
-        throw new NotImplementedException();
+        return Ok((await _shiftService.CreateShift(newShiftInfo)).ToString());
     }
 
     /// <summary>
@@ -40,9 +50,10 @@ public class ShiftsController : ApiControllerBase
     /// <returns>Status code indicating whether request succeeded.</returns>
     [HttpPut("{id:guid}")]
     [Authorize(Roles = "Receptionist")]
-    public IActionResult EditShift([FromRoute] Guid id, [FromBody] ShiftDto updatedShiftInfo)
+    public async Task<IActionResult> EditShift([FromRoute] Guid id, [FromBody] ShiftDto updatedShiftInfo)
     {
-        throw new NotImplementedException();
+        await _shiftService.UpdateShift(id, updatedShiftInfo);
+        return Ok();
     }
 
     /// <summary>
@@ -52,8 +63,9 @@ public class ShiftsController : ApiControllerBase
     /// <returns>Status code indicating whether request succeeded.</returns>
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Receptionist")]
-    public IActionResult DeleteShift([FromRoute] Guid id)
+    public async Task<IActionResult> DeleteShift([FromRoute] Guid id)
     {
-        throw new NotImplementedException();
+        await _shiftService.DeleteShift(id);
+        return NoContent();
     }
 }

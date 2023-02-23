@@ -12,11 +12,8 @@
 
     <ItemGroup>
       <Folder Include="ScheduleService\Implementations" />
-      <Folder Include="ScheduleService\Interfaces" />
       <Folder Include="ShiftService\Implementations" />
-      <Folder Include="ShiftService\Interfaces" />
       <Folder Include="TimeSlotService\Implementations" />
-      <Folder Include="TimeSlotService\Interfaces" />
     </ItemGroup>
 
 </Project>

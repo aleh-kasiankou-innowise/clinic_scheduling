@@ -1,4 +1,4 @@
-namespace Innowise.Clinic.Scheduling.Api.Dto;
+namespace Innowise.Clinic.Scheduling.Services.Dto;
 
 /// <summary>
 /// Request for reserving appointment time.

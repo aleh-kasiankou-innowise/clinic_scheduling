@@ -1,4 +1,4 @@
-namespace Innowise.Clinic.Scheduling.Api.Dto;
+namespace Innowise.Clinic.Scheduling.Services.Dto;
 
 /// <summary>
 /// Represents the schedule update for the whole month.
