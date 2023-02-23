@@ -1,6 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Innowise.Clinic.Scheduling", "Innowise.Clinic.Scheduling\Innowise.Clinic.Scheduling.csproj", "{0A8A9151-4BDD-40F1-A6E9-A5C33B6B1745}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Innowise.Clinic.Scheduling.Api", "Innowise.Clinic.Scheduling.Api\Innowise.Clinic.Scheduling.Api.csproj", "{0A8A9151-4BDD-40F1-A6E9-A5C33B6B1745}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Innowise.Clinic.Scheduling.Persistence", "Innowise.Clinic.Scheduling.Persistence\Innowise.Clinic.Scheduling.Persistence.csproj", "{D5BD8D16-B881-4D16-A383-9FE0865EC382}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Innowise.Clinic.Scheduling.Services", "Innowise.Clinic.Scheduling.Services\Innowise.Clinic.Scheduling.Services.csproj", "{E65CAD3A-179D-4F18-8FD4-8F7008B4E735}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +16,13 @@ Global
 		{0A8A9151-4BDD-40F1-A6E9-A5C33B6B1745}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A8A9151-4BDD-40F1-A6E9-A5C33B6B1745}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A8A9151-4BDD-40F1-A6E9-A5C33B6B1745}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5BD8D16-B881-4D16-A383-9FE0865EC382}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5BD8D16-B881-4D16-A383-9FE0865EC382}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5BD8D16-B881-4D16-A383-9FE0865EC382}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5BD8D16-B881-4D16-A383-9FE0865EC382}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E65CAD3A-179D-4F18-8FD4-8F7008B4E735}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E65CAD3A-179D-4F18-8FD4-8F7008B4E735}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E65CAD3A-179D-4F18-8FD4-8F7008B4E735}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E65CAD3A-179D-4F18-8FD4-8F7008B4E735}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

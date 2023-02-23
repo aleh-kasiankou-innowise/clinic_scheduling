@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Innowise.Clinic.Scheduling.Persistence\Innowise.Clinic.Scheduling.Persistence.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="ScheduleService\Implementations" />
+      <Folder Include="ScheduleService\Interfaces" />
+      <Folder Include="ShiftService\Implementations" />
+      <Folder Include="ShiftService\Interfaces" />
+      <Folder Include="TimeSlotService\Implementations" />
+      <Folder Include="TimeSlotService\Interfaces" />
+    </ItemGroup>
+
+</Project>

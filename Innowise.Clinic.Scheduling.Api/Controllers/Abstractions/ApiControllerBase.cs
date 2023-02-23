@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Innowise.Clinic.Scheduling.Controllers.Abstractions;
+namespace Innowise.Clinic.Scheduling.Api.Controllers.Abstractions;
 
 [ApiController]
 [Route("[controller]")]
