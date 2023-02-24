@@ -32,6 +32,17 @@ public class ShiftsController : ApiControllerBase
     }
     
     /// <summary>
+    /// Displays info about shift by its id.
+    /// </summary>
+    /// <returns>Info about shift.</returns>
+    [HttpGet]
+    [Authorize(Roles = "Doctor,Receptionist")]
+    public async Task<ActionResult<Shift>> GetShift(Guid id)
+    {
+        return Ok(await _shiftService.GetShift(id));
+    }
+    
+    /// <summary>
     /// Creates a new shift available for doctors.
     /// </summary>
     /// <returns>Id of the created shift.</returns>
