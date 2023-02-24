@@ -43,6 +43,17 @@ public class ShiftsController : ApiControllerBase
     }
     
     /// <summary>
+    /// Displays doctors shift preference.
+    /// </summary>
+    /// <returns>Info about preferred shift.</returns>
+    [HttpGet]
+    [Authorize(Roles = "Doctor,Receptionist")]
+    public async Task<ActionResult<ShiftPreference>> GetShiftPreference(Guid id)
+    {
+        return Ok(await _shiftService.GetShiftPreference(id));
+    }
+    
+    /// <summary>
     /// Creates a new shift available for doctors.
     /// </summary>
     /// <returns>Id of the created shift.</returns>

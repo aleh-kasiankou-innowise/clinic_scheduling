@@ -1,6 +1,6 @@
 using Innowise.Clinic.Scheduling.Api.Controllers.Abstractions;
 using Innowise.Clinic.Scheduling.Services.Dto;
-using Innowise.Clinic.Scheduling.Services.ScheduleService.Interfaces;
+using Innowise.Clinic.Scheduling.Services.ScheduleGenerationService.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Innowise.Clinic.Scheduling.Api.Controllers;
@@ -10,11 +10,11 @@ namespace Innowise.Clinic.Scheduling.Api.Controllers;
 /// </summary>
 public class HelperServicesController : ApiControllerBase
 {
-    private readonly IScheduleService _scheduleService;
+    private readonly IScheduleGenerationService _scheduleGenerationService;
 
-    public HelperServicesController(IScheduleService scheduleService)
+    public HelperServicesController(IScheduleGenerationService scheduleGenerationService)
     {
-        _scheduleService = scheduleService;
+        _scheduleGenerationService = scheduleGenerationService;
     }
 
     /// <summary>
@@ -25,7 +25,7 @@ public class HelperServicesController : ApiControllerBase
     [HttpPost("schedule-generation")]
     public async Task<IActionResult> GenerateSchedule([FromBody] ScheduleGenerationRequest generationRequest)
     {
-        await _scheduleService.GenerateScheduleAsync(generationRequest);
+        await _scheduleGenerationService.GenerateScheduleAsync(generationRequest);
         return Ok();
     }
 }

@@ -25,6 +25,11 @@ public class ShiftService : IShiftService
         return await GetShiftOrThrowException(id);
     }
 
+    public async Task<ShiftPreference> GetShiftPreference(Guid id)
+    {
+        return await GetPreferredShiftOrThrowException(id);
+    }
+
     public async Task<Guid> CreateShift(ShiftDto newShiftInfo)
     {
         var shiftToSave = new Shift
@@ -63,6 +68,12 @@ public class ShiftService : IShiftService
     private async Task<Shift> GetShiftOrThrowException(Guid id)
     {
         return await _dbContext.Shifts.FirstOrDefaultAsync(x => x.ShiftId == id) ??
+               throw new NotImplementedException();
+    }
+    
+    private async Task<ShiftPreference> GetPreferredShiftOrThrowException(Guid id)
+    {
+        return await _dbContext.ShiftPreferences.FirstOrDefaultAsync(x => x.DoctorId == id) ??
                throw new NotImplementedException();
     }
 }
