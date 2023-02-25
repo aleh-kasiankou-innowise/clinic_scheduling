@@ -15,8 +15,8 @@ public class ScheduleService : IScheduleService
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Schedule>> GetScheduleAsync(Guid specializationId, Guid officeId, DateOnly from,
-        DateOnly to)
+    public async Task<IEnumerable<Schedule>> GetScheduleAsync(Guid specializationId, Guid officeId, DateTime from,
+        DateTime to)
     {
         return await _dbContext.Schedules
             .Where(x =>
@@ -34,6 +34,7 @@ public class ScheduleService : IScheduleService
         var datesToUpdate = editScheduleForMonthDto.ScheduleUpdateForMonth
             .Select(x => x.Day)
             .ToArray();
+        
         var savedSchedulesToUpdate = _dbContext.Schedules
             .Where(x =>
                 x.DoctorId == doctorId
@@ -47,7 +48,7 @@ public class ScheduleService : IScheduleService
                     .FirstOrDefault(x => x.ScheduleId == scheduleToUpdate.ShiftId)
                 ?? throw new NotImplementedException();
             
-            savedScheduleToUpdate.Day = scheduleToUpdate.Day;
+            savedScheduleToUpdate.Day = scheduleToUpdate.Day.Date;
         }
         
         _dbContext.UpdateRange(savedSchedulesToUpdate);

@@ -11,4 +11,4 @@ public record EditScheduleForMonthDto(IEnumerable<EditScheduleForDayDto> Schedul
 /// </summary>
 /// <param name="Day">Day when shift should be changed.</param>
 /// <param name="ShiftId">Id of the shift to set for the date. Null value means the employee is absent.</param>
-public record EditScheduleForDayDto(DateOnly Day, Guid? ShiftId);
+public record EditScheduleForDayDto(DateTime Day, Guid? ShiftId);

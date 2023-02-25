@@ -4,7 +4,7 @@ public class Shift
 {
     public Guid ShiftId { get; set; }
     public string ShiftName { get; set; }
-    public TimeOnly ShiftStart { get; set; }
-    public TimeOnly LunchStart { get; set; }
-    public uint WorkingHours { get; set; } = 8;
+    public TimeSpan ShiftStart { get; set; }
+    public TimeSpan LunchStart { get; set; }
+    public TimeSpan WorkingHours { get; set; } = new(8,0,0);
 }

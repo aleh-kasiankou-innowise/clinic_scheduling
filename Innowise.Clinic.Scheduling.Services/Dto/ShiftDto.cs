@@ -7,4 +7,5 @@ namespace Innowise.Clinic.Scheduling.Services.Dto;
 /// <param name="ShiftStart">Time when the shift starts.</param>
 /// <param name="WorkingHours">Number of working hours during shift.</param>>
 /// <param name="LunchStart">Time when the lunch break starts.</param>
-public record ShiftDto(string ShiftName ,TimeOnly ShiftStart, uint WorkingHours, TimeOnly LunchStart);
+public record ShiftDto(string ShiftName ,TimeSpan ShiftStart, TimeSpan
+    WorkingHours, TimeSpan LunchStart);

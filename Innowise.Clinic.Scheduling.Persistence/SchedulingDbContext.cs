@@ -23,21 +23,25 @@ public class SchedulingDbContext : DbContext
             .Property(x => x.ShiftName)
             .HasColumnType("nvarchar(256)");
 
+        modelBuilder.Entity<Shift>().Property(x => x.ShiftStart).HasColumnType("time");
+        modelBuilder.Entity<Shift>().Property(x => x.LunchStart).HasColumnType("time");
+        modelBuilder.Entity<Shift>().Property(x => x.WorkingHours).HasColumnType("time");
+
         modelBuilder.Entity<Shift>().HasData(new List<Shift>
         {
             new()
             {
                 ShiftId = Guid.Parse("fca4da48-877d-4538-9bbe-927897dc0e92"),
                 ShiftName = "9 to 6 (8 hours)",
-                ShiftStart = new TimeOnly(9, 00),
-                LunchStart = new TimeOnly(13, 00),
+                ShiftStart = new TimeSpan(9, 0,0),
+                LunchStart = new TimeSpan(13, 0, 0),
             },
             new()
             {
                 ShiftId = Guid.Parse("df9f9f88-1a70-4161-b9a3-edbc521016a5"),
                 ShiftName = "12 to 21 (8 hours)",
-                ShiftStart = new TimeOnly(12, 00),
-                LunchStart = new TimeOnly(16, 00),
+                ShiftStart = new TimeSpan(12, 0,0),
+                LunchStart = new TimeSpan(16, 0,0),
             }
         });
 
@@ -51,6 +55,9 @@ public class SchedulingDbContext : DbContext
 
         modelBuilder.Entity<Schedule>()
             .HasKey(x => x.ScheduleId);
+
+        modelBuilder.Entity<Schedule>()
+            .Property(x => x.Day).HasColumnType("date");
         
         modelBuilder.Entity<Schedule>()
             .HasOne(x => x.Shift)

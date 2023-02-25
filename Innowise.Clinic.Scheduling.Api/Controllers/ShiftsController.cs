@@ -35,7 +35,7 @@ public class ShiftsController : ApiControllerBase
     /// Displays info about shift by its id.
     /// </summary>
     /// <returns>Info about shift.</returns>
-    [HttpGet]
+    [HttpGet("{id:guid}")]
     [Authorize(Roles = "Doctor,Receptionist")]
     public async Task<ActionResult<Shift>> GetShift(Guid id)
     {
@@ -46,7 +46,7 @@ public class ShiftsController : ApiControllerBase
     /// Displays doctors shift preference.
     /// </summary>
     /// <returns>Info about preferred shift.</returns>
-    [HttpGet]
+    [HttpGet("preferences/doctors/{id:guid}")]
     [Authorize(Roles = "Doctor,Receptionist")]
     public async Task<ActionResult<ShiftPreference>> GetShiftPreference(Guid id)
     {

@@ -10,8 +10,4 @@
       <ProjectReference Include="..\Innowise.Clinic.Scheduling.Persistence\Innowise.Clinic.Scheduling.Persistence.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="TimeSlotService\Implementations" />
-    </ItemGroup>
-
 </Project>

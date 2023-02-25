@@ -5,6 +5,6 @@ namespace Innowise.Clinic.Scheduling.Services.ScheduleService.Interfaces;
 
 public interface IScheduleService
 {
-    Task<IEnumerable<Schedule>> GetScheduleAsync(Guid specialization, Guid office, DateOnly from, DateOnly to);
+    Task<IEnumerable<Schedule>> GetScheduleAsync(Guid specialization, Guid office, DateTime from, DateTime to);
     Task UpdateScheduleAsync(Guid doctorId, EditScheduleForMonthDto editScheduleForMonthDto);
 }

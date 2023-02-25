@@ -34,7 +34,7 @@ public class ScheduleController : ApiControllerBase
     [HttpGet]
     [Authorize(Roles = "Doctor,Receptionist")]
     public async Task<ActionResult<IEnumerable<Schedule>>> GetScheduleForMonth([FromQuery] Guid specialization, [FromQuery] Guid office,
-        [FromQuery] DateOnly from, [FromQuery] DateOnly to)
+        [FromQuery] DateTime from, [FromQuery] DateTime to)
     {
         return Ok(await _scheduleService.GetScheduleAsync(specialization, office, from, to));
     }

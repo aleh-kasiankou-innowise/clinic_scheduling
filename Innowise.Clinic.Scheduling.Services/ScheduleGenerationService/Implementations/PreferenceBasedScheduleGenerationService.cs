@@ -36,7 +36,7 @@ public class PreferenceBasedScheduleGenerationService : IScheduleGenerationServi
                     SpecializationId = preference.SpecializationId,
                     OfficeId = preference.OfficeId,
                     DoctorId = preference.DoctorId,
-                    Day = new(i.Year, i.Month, i.Day),
+                    Day = i.Date,
                     ShiftId = preference.ShiftId,
                 });
             }
@@ -62,7 +62,7 @@ public class PreferenceBasedScheduleGenerationService : IScheduleGenerationServi
                 SpecializationId = doctorPreference.SpecializationId,
                 OfficeId = doctorPreference.OfficeId,
                 DoctorId = doctorPreference.DoctorId,
-                Day = new(i.Year, i.Month, i.Day),
+                Day = i.Date,
                 ShiftId = doctorPreference.ShiftId,
             });
         }
