@@ -1,6 +1,7 @@
 using Innowise.Clinic.Scheduling.Persistence;
 using Innowise.Clinic.Scheduling.Persistence.Models;
 using Innowise.Clinic.Scheduling.Services.Dto;
+using Innowise.Clinic.Scheduling.Services.Exceptions;
 using Innowise.Clinic.Scheduling.Services.ScheduleService.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,7 +35,7 @@ public class ScheduleService : IScheduleService
         var datesToUpdate = editScheduleForMonthDto.ScheduleUpdateForMonth
             .Select(x => x.Day)
             .ToArray();
-        
+
         var savedSchedulesToUpdate = _dbContext.Schedules
             .Where(x =>
                 x.DoctorId == doctorId
@@ -45,12 +46,12 @@ public class ScheduleService : IScheduleService
         {
             var savedScheduleToUpdate =
                 savedSchedulesToUpdate
-                    .FirstOrDefault(x => x.ScheduleId == scheduleToUpdate.ShiftId)
-                ?? throw new NotImplementedException();
-            
-            savedScheduleToUpdate.Day = scheduleToUpdate.Day.Date;
+                    .FirstOrDefault(x => x.Day == scheduleToUpdate.Day.Date)
+                ?? throw new MissingEntryException(
+                    $"The schedule for the day is not generated:{scheduleToUpdate.Day.Date}.");
+            savedScheduleToUpdate.ShiftId = scheduleToUpdate.ShiftId;
         }
-        
+
         _dbContext.UpdateRange(savedSchedulesToUpdate);
         await _dbContext.SaveChangesAsync();
     }

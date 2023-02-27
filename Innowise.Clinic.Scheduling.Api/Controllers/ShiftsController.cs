@@ -28,7 +28,7 @@ public class ShiftsController : ApiControllerBase
     [Authorize(Roles = "Doctor,Receptionist")]
     public async Task<ActionResult<IEnumerable<Shift>>> GetShifts()
     {
-        return Ok(await _shiftService.GetShifts());
+        return Ok(await _shiftService.GetShiftsAsync());
     }
     
     /// <summary>
@@ -39,7 +39,7 @@ public class ShiftsController : ApiControllerBase
     [Authorize(Roles = "Doctor,Receptionist")]
     public async Task<ActionResult<Shift>> GetShift(Guid id)
     {
-        return Ok(await _shiftService.GetShift(id));
+        return Ok(await _shiftService.GetShiftAsync(id));
     }
     
     /// <summary>
@@ -50,7 +50,7 @@ public class ShiftsController : ApiControllerBase
     [Authorize(Roles = "Doctor,Receptionist")]
     public async Task<ActionResult<ShiftPreference>> GetShiftPreference(Guid id)
     {
-        return Ok(await _shiftService.GetShiftPreference(id));
+        return Ok(await _shiftService.GetShiftPreferenceAsync(id));
     }
     
     /// <summary>
@@ -61,7 +61,7 @@ public class ShiftsController : ApiControllerBase
     [Authorize(Roles = "Receptionist")]
     public async Task<ActionResult<Guid>> CreateShift([FromBody] ShiftDto newShiftInfo)
     {
-        return Ok((await _shiftService.CreateShift(newShiftInfo)).ToString());
+        return Ok((await _shiftService.CreateShiftAsync(newShiftInfo)).ToString());
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ public class ShiftsController : ApiControllerBase
     [Authorize(Roles = "Receptionist")]
     public async Task<IActionResult> EditShift([FromRoute] Guid id, [FromBody] ShiftDto updatedShiftInfo)
     {
-        await _shiftService.UpdateShift(id, updatedShiftInfo);
+        await _shiftService.UpdateShiftAsync(id, updatedShiftInfo);
         return Ok();
     }
 
@@ -87,7 +87,7 @@ public class ShiftsController : ApiControllerBase
     [Authorize(Roles = "Receptionist")]
     public async Task<IActionResult> DeleteShift([FromRoute] Guid id)
     {
-        await _shiftService.DeleteShift(id);
+        await _shiftService.DeleteShiftAsync(id);
         return NoContent();
     }
 }

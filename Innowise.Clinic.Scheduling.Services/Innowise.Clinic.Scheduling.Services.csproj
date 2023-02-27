@@ -10,4 +10,14 @@
       <ProjectReference Include="..\Innowise.Clinic.Scheduling.Persistence\Innowise.Clinic.Scheduling.Persistence.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Hangfire.Core">
+        <HintPath>..\..\..\..\..\.nuget\packages\hangfire.core\1.7.33\lib\netstandard2.0\Hangfire.Core.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Hangfire" Version="1.7.33" />
+    </ItemGroup>
+
 </Project>

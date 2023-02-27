@@ -1,5 +1,7 @@
 using System.Text;
+using Hangfire;
 using Innowise.Clinic.Scheduling.Persistence;
+using Innowise.Clinic.Scheduling.Services.HangfireService;
 using Innowise.Clinic.Scheduling.Services.Options;
 using Innowise.Clinic.Scheduling.Services.ScheduleGenerationService.Implementations;
 using Innowise.Clinic.Scheduling.Services.ScheduleGenerationService.Interfaces;
@@ -50,9 +52,12 @@ builder.Services.AddScoped<IScheduleGenerationService, PreferenceBasedScheduleGe
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
 builder.Services.AddScoped<ITimeSlotService, TimeSlotService>();
+builder.Services.AddHangfire(x => x.UseSqlServerStorage(builder.Configuration.GetConnectionString("Default")));
+builder.Services.AddHangfireServer();
 
 builder.Services.Configure<RouteOptions>(options => { options.LowercaseUrls = true; });
-builder.Services.Configure<ScheduleGenerationConfigOptions>(builder.Configuration.GetSection("ScheduleGenerationConfiguration"));
+builder.Services.Configure<ScheduleGenerationConfigOptions>(
+    builder.Configuration.GetSection("ScheduleGenerationConfiguration"));
 builder.Services.Configure<WorkingDayConfigOptions>(
     builder.Configuration.GetSection("ScheduleConfiguration"));
 
@@ -76,7 +81,6 @@ builder.Services.AddAuthentication(options =>
 });
 
 
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -91,6 +95,11 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[] { new AllowGuestAccessToDashboardFilter() }
+});
+await app.ConfigureBackgroundScheduleGeneration();
 
 app.UseAuthorization();
 
