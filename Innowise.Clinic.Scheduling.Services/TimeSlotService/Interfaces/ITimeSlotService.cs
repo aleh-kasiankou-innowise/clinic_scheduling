@@ -6,6 +6,6 @@ public interface ITimeSlotService
 {
     Task<IEnumerable<FreeTimeSlotDto>> GetFreeTimeSlots(Guid doctorId, DateTime appointmentDay,
         TimeSpan appointmentDuration);
-    Task<Guid> ReserveSlot(TimeSlotReservationDto timeSlotReservationDto);
-    Task UpdateTimeSlot(Guid id, TimeSlotReservationDto timeSlotReservationDto);
+    Task<Guid> ReserveSlotAsync(TimeSlotReservationDto timeSlotReservationDto);
+    Task<Guid> UpdateTimeSlotAsync(Guid id, TimeSlotReservationDto timeSlotReservationDto);
 }

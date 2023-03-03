@@ -31,13 +31,13 @@ public class TimeSlotService : ITimeSlotService
         return CalculateFreeTimeSlots(shiftStart, shiftEnd, lunchStart, appointmentDuration, reservedTimeSlots);
     }
 
-    public async Task<ReservedTimeSlot> GetReservedTimeSlot(Guid id)
+    public async Task<ReservedTimeSlot> GetReservedTimeSlotAsync(Guid id)
     {
         return await _dbContext.ReservedTimeSlots.FirstOrDefaultAsync(x => x.ReservedTimeSlotId == id) ??
                throw new MissingEntryException($"There is no booking with such id: {id}.");
     }
 
-    public async Task<Guid> ReserveSlot(TimeSlotReservationDto timeSlotReservationDto)
+    public async Task<Guid> ReserveSlotAsync(TimeSlotReservationDto timeSlotReservationDto)
     {
         var appointmentDuration = timeSlotReservationDto.AppointmentFinish - timeSlotReservationDto.AppointmentStart;
         var freeTimeSlots = await GetFreeTimeSlots(timeSlotReservationDto.DoctorId,
@@ -49,7 +49,6 @@ public class TimeSlotService : ITimeSlotService
         {
             var timeSlotReservation = new ReservedTimeSlot
             {
-                AppointmentId = timeSlotReservationDto.AppointmentId,
                 AppointmentStart = timeSlotReservationDto.AppointmentStart,
                 AppointmentFinish = timeSlotReservationDto.AppointmentFinish,
                 DoctorId = timeSlotReservationDto.DoctorId
@@ -64,16 +63,27 @@ public class TimeSlotService : ITimeSlotService
             $"There is no timeslot with the requested timeframe: {timeSlotReservationDto.AppointmentStart} - {timeSlotReservationDto.AppointmentFinish}");
     }
 
-    public async Task UpdateTimeSlot(Guid id, TimeSlotReservationDto timeSlotReservationDto)
+    public async Task<Guid> UpdateTimeSlotAsync(Guid id, TimeSlotReservationDto timeSlotReservationDto)
     {
-        var timeSlot = await _dbContext.ReservedTimeSlots.FirstOrDefaultAsync(x => x.AppointmentId == id) ??
-                       throw new MissingEntryException(
-                           $"There is no timeslot reservation for appointment with id {id}.")
-            ;
-        timeSlot.AppointmentStart = timeSlotReservationDto.AppointmentStart;
-        timeSlot.AppointmentFinish = timeSlot.AppointmentFinish;
-        _dbContext.Update(timeSlot);
-        await _dbContext.SaveChangesAsync();
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+        try
+        {
+            await DeleteTimeSlotAsync(id);
+            var reservedTimeSlotId = await ReserveSlotAsync(timeSlotReservationDto);
+            await transaction.CommitAsync();
+            return reservedTimeSlotId;
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task DeleteTimeSlotAsync(Guid id)
+    {
+        var timeSlotToRemove = await GetReservedTimeSlotAsync(id);
+        _dbContext.ReservedTimeSlots.Remove(timeSlotToRemove);
     }
 
     private async Task<List<ReservedTimeSlot>> GetReservedTimeSlotsAsync(Guid doctorId, DateTime appointmentDay)

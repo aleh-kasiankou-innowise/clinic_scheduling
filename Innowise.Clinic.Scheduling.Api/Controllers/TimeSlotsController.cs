@@ -40,20 +40,20 @@ public class TimeSlotsController : ApiControllerBase
     [HttpPost]
     public async Task<ActionResult<Guid>> ReserveTimeSlot([FromBody] TimeSlotReservationDto timeSlotReservationDto)
     {
-        return Ok((await _timeSlotService.ReserveSlot(timeSlotReservationDto)).ToString());
+        return Ok((await _timeSlotService.ReserveSlotAsync(timeSlotReservationDto)).ToString());
     }
 
     /// <summary>
     /// Updates appointment time.
     /// </summary>
-    /// <param name="id">Id of the appointment.</param>
+    /// <param name="id">Id of the timeslot.</param>
     /// <param name="timeSlotReservationDto">Object with appointment start time and end time.</param>
     /// <returns>Status code indicating whether request succeeded.</returns>
     [HttpPut("appointments/{id:guid}")]
     public async Task<IActionResult> EditTimeSlot([FromRoute] Guid id,
         [FromBody] TimeSlotReservationDto timeSlotReservationDto)
     {
-        await _timeSlotService.UpdateTimeSlot(id, timeSlotReservationDto);
+        await _timeSlotService.UpdateTimeSlotAsync(id, timeSlotReservationDto);
         return Ok();
     }
 }
