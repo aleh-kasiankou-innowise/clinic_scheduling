@@ -1,4 +1,3 @@
-using Innowise.Clinic.Scheduling.Services.Dto;
 using Innowise.Clinic.Scheduling.Services.TimeSlotService.Interfaces;
 using Innowise.Clinic.Shared.MassTransit.MessageTypes;
 using MassTransit;
@@ -16,11 +15,9 @@ public class TimeSlotReservationRequestConsumer : IConsumer<TimeSlotReservationR
 
     public async Task Consume(ConsumeContext<TimeSlotReservationRequest> context)
     {
-        var reservation = new TimeSlotReservationDto(context.Message.DoctorId, context.Message.AppointmentStart,
-            context.Message.AppointmentEnd);
         try
         {
-            var timeSlotId = await _timeSlotService.ReserveSlotAsync(reservation);
+            var timeSlotId = await _timeSlotService.ReserveSlotAsync(context.Message);
             await context.RespondAsync<TimeSlotReservationResponse>(new(true, timeSlotId, null));
         }
         catch (Exception e)

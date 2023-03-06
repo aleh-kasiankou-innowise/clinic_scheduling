@@ -31,29 +31,4 @@ public class TimeSlotsController : ApiControllerBase
     {
         return Ok(await _timeSlotService.GetFreeTimeSlots(doctorId, appointmentDay, new TimeSpan(0, duration, 0)));
     }
-
-    /// <summary>
-    /// Reserves timeslot fot appointment.
-    /// </summary>
-    /// <param name="timeSlotReservationDto"></param>
-    /// <returns>Id of the reserved timeslot.</returns>
-    [HttpPost]
-    public async Task<ActionResult<Guid>> ReserveTimeSlot([FromBody] TimeSlotReservationDto timeSlotReservationDto)
-    {
-        return Ok((await _timeSlotService.ReserveSlotAsync(timeSlotReservationDto)).ToString());
-    }
-
-    /// <summary>
-    /// Updates appointment time.
-    /// </summary>
-    /// <param name="id">Id of the timeslot.</param>
-    /// <param name="timeSlotReservationDto">Object with appointment start time and end time.</param>
-    /// <returns>Status code indicating whether request succeeded.</returns>
-    [HttpPut("appointments/{id:guid}")]
-    public async Task<IActionResult> EditTimeSlot([FromRoute] Guid id,
-        [FromBody] TimeSlotReservationDto timeSlotReservationDto)
-    {
-        await _timeSlotService.UpdateTimeSlotAsync(id, timeSlotReservationDto);
-        return Ok();
-    }
 }

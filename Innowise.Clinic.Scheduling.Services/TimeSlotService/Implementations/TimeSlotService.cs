@@ -4,6 +4,7 @@ using Innowise.Clinic.Scheduling.Services.Dto;
 using Innowise.Clinic.Scheduling.Services.Exceptions;
 using Innowise.Clinic.Scheduling.Services.Options;
 using Innowise.Clinic.Scheduling.Services.TimeSlotService.Interfaces;
+using Innowise.Clinic.Shared.MassTransit.MessageTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -37,20 +38,20 @@ public class TimeSlotService : ITimeSlotService
                throw new MissingEntryException($"There is no booking with such id: {id}.");
     }
 
-    public async Task<Guid> ReserveSlotAsync(TimeSlotReservationDto timeSlotReservationDto)
+    public async Task<Guid> ReserveSlotAsync(TimeSlotReservationRequest timeSlotReservationDto)
     {
-        var appointmentDuration = timeSlotReservationDto.AppointmentFinish - timeSlotReservationDto.AppointmentStart;
+        var appointmentDuration = timeSlotReservationDto.AppointmentEnd - timeSlotReservationDto.AppointmentStart;
         var freeTimeSlots = await GetFreeTimeSlots(timeSlotReservationDto.DoctorId,
             timeSlotReservationDto.AppointmentStart.Date, appointmentDuration);
 
         if (freeTimeSlots.Any(x =>
                 x.AppointmentStart == timeSlotReservationDto.AppointmentStart &&
-                x.AppointmentEnd == timeSlotReservationDto.AppointmentFinish))
+                x.AppointmentEnd == timeSlotReservationDto.AppointmentEnd))
         {
             var timeSlotReservation = new ReservedTimeSlot
             {
                 AppointmentStart = timeSlotReservationDto.AppointmentStart,
-                AppointmentFinish = timeSlotReservationDto.AppointmentFinish,
+                AppointmentFinish = timeSlotReservationDto.AppointmentEnd,
                 DoctorId = timeSlotReservationDto.DoctorId
             };
 
@@ -60,10 +61,10 @@ public class TimeSlotService : ITimeSlotService
         }
 
         throw new InvalidTimeslotException(
-            $"There is no timeslot with the requested timeframe: {timeSlotReservationDto.AppointmentStart} - {timeSlotReservationDto.AppointmentFinish}");
+            $"There is no timeslot with the requested timeframe: {timeSlotReservationDto.AppointmentStart} - {timeSlotReservationDto.AppointmentEnd}");
     }
 
-    public async Task<Guid> UpdateTimeSlotAsync(Guid id, TimeSlotReservationDto timeSlotReservationDto)
+    public async Task<Guid> UpdateTimeSlotAsync(Guid id, TimeSlotReservationRequest timeSlotReservationDto)
     {
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
