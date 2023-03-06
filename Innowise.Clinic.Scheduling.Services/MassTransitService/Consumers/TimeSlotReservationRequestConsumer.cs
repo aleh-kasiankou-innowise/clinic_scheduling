@@ -1,6 +1,6 @@
 using Innowise.Clinic.Scheduling.Services.Dto;
-using Innowise.Clinic.Scheduling.Services.MassTransitService.MessageTypes;
 using Innowise.Clinic.Scheduling.Services.TimeSlotService.Interfaces;
+using Innowise.Clinic.Shared.MassTransit.MessageTypes;
 using MassTransit;
 
 namespace Innowise.Clinic.Scheduling.Services.MassTransitService.Consumers;
@@ -21,11 +21,14 @@ public class TimeSlotReservationRequestConsumer : IConsumer<TimeSlotReservationR
         try
         {
             var timeSlotId = await _timeSlotService.ReserveSlotAsync(reservation);
-            await context.RespondAsync<TimeSlotReservationResponse>(new(true, timeSlotId));
+            await context.RespondAsync<TimeSlotReservationResponse>(new(true, timeSlotId, null));
         }
-        catch
+        catch (Exception e)
         {
-            await context.RespondAsync<TimeSlotReservationResponse>(new(false, null));
+            var message = e is ApplicationException
+                ? e.Message
+                : "Internal Server Error. Please contact out support team.";
+            await context.RespondAsync<TimeSlotReservationResponse>(new(false, null, message));
         }
     }
 }
