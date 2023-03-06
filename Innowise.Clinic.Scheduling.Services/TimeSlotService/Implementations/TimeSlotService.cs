@@ -4,7 +4,7 @@ using Innowise.Clinic.Scheduling.Services.Dto;
 using Innowise.Clinic.Scheduling.Services.Exceptions;
 using Innowise.Clinic.Scheduling.Services.Options;
 using Innowise.Clinic.Scheduling.Services.TimeSlotService.Interfaces;
-using Innowise.Clinic.Shared.MassTransit.MessageTypes;
+using Innowise.Clinic.Shared.MassTransit.MessageTypes.Requests;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -69,13 +69,13 @@ public class TimeSlotService : ITimeSlotService
             $"There is no timeslot with the requested timeframe: {timeSlotReservationDto.AppointmentStart} - {timeSlotReservationDto.AppointmentEnd}");
     }
     
-    public async Task UpdateTimeSlotAsync(Guid id, TimeSlotReservationRequest timeSlotReservationDto)
+    public async Task UpdateTimeSlotAsync(UpdateAppointmentTimeslotRequest timeslotUpdateRequest)
     {
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
-            await DeleteTimeSlotAsync(id);
-            var reservedTimeSlotId = await ReserveSlotAsync(timeSlotReservationDto, id);
+            await DeleteTimeSlotAsync(timeslotUpdateRequest.TimeSlotId);
+            await ReserveSlotAsync(timeslotUpdateRequest.UpdatedTimeslotInfo, timeslotUpdateRequest.TimeSlotId);
             await transaction.CommitAsync();
         }
         catch (Exception)

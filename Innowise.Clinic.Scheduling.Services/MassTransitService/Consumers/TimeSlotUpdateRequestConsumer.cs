@@ -4,28 +4,28 @@ using MassTransit;
 
 namespace Innowise.Clinic.Scheduling.Services.MassTransitService.Consumers;
 
-public class TimeSlotReservationRequestConsumer : IConsumer<TimeSlotReservationRequest>
+public class TimeSlotUpdateRequestConsumer : IConsumer<UpdateAppointmentTimeslotRequest>
 {
     private readonly ITimeSlotService _timeSlotService;
 
-    public TimeSlotReservationRequestConsumer(ITimeSlotService timeSlotService)
+    public TimeSlotUpdateRequestConsumer(ITimeSlotService timeSlotService)
     {
         _timeSlotService = timeSlotService;
     }
 
-    public async Task Consume(ConsumeContext<TimeSlotReservationRequest> context)
+    public async Task Consume(ConsumeContext<UpdateAppointmentTimeslotRequest> context)
     {
         try
         {
-            var timeSlotId = await _timeSlotService.ReserveSlotAsync(context.Message);
-            await context.RespondAsync<TimeSlotReservationResponse>(new(true, timeSlotId, null));
+            await _timeSlotService.UpdateTimeSlotAsync(context.Message);
+            await context.RespondAsync<UpdateAppointmentTimeslotResponse>(new(true, null));
         }
         catch (Exception e)
         {
             var message = e is ApplicationException
                 ? e.Message
                 : "Internal Server Error. Please contact out support team.";
-            await context.RespondAsync<TimeSlotReservationResponse>(new(false, null, message));
+            await context.RespondAsync<UpdateAppointmentTimeslotResponse>(new(false, message));
         }
     }
 }
