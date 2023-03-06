@@ -38,7 +38,7 @@ public class TimeSlotService : ITimeSlotService
                throw new MissingEntryException($"There is no booking with such id: {id}.");
     }
 
-    public async Task<Guid> ReserveSlotAsync(TimeSlotReservationRequest timeSlotReservationDto)
+    public async Task<Guid> ReserveSlotAsync(TimeSlotReservationRequest timeSlotReservationDto, Guid? newReservationId)
     {
         var appointmentDuration = timeSlotReservationDto.AppointmentEnd - timeSlotReservationDto.AppointmentStart;
         var freeTimeSlots = await GetFreeTimeSlots(timeSlotReservationDto.DoctorId,
@@ -55,6 +55,11 @@ public class TimeSlotService : ITimeSlotService
                 DoctorId = timeSlotReservationDto.DoctorId
             };
 
+            if (newReservationId != null)
+            {
+                timeSlotReservation.ReservedTimeSlotId = (Guid) newReservationId;
+            }
+
             _dbContext.ReservedTimeSlots.Add(timeSlotReservation);
             await _dbContext.SaveChangesAsync();
             return timeSlotReservation.ReservedTimeSlotId;
@@ -63,16 +68,15 @@ public class TimeSlotService : ITimeSlotService
         throw new InvalidTimeslotException(
             $"There is no timeslot with the requested timeframe: {timeSlotReservationDto.AppointmentStart} - {timeSlotReservationDto.AppointmentEnd}");
     }
-
-    public async Task<Guid> UpdateTimeSlotAsync(Guid id, TimeSlotReservationRequest timeSlotReservationDto)
+    
+    public async Task UpdateTimeSlotAsync(Guid id, TimeSlotReservationRequest timeSlotReservationDto)
     {
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
             await DeleteTimeSlotAsync(id);
-            var reservedTimeSlotId = await ReserveSlotAsync(timeSlotReservationDto);
+            var reservedTimeSlotId = await ReserveSlotAsync(timeSlotReservationDto, id);
             await transaction.CommitAsync();
-            return reservedTimeSlotId;
         }
         catch (Exception)
         {
