@@ -21,7 +21,8 @@
 
     <ItemGroup>
       <PackageReference Include="Hangfire" Version="1.7.33" />
-      <PackageReference Include="Innowise.Clinic.Shared" Version="0.0.5" />
+      <PackageReference Include="Innowise.Clinic.Shared" Version="0.0.10" />
+      <PackageReference Include="MassTransit" Version="8.0.13" />
     </ItemGroup>
 
 </Project>
