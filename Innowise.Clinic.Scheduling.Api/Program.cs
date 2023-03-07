@@ -11,6 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger(builder.Configuration);
 builder.Services.ConfigureDatabase(builder.Configuration);
 builder.Services.ConfigureServices(builder.Configuration);
+builder.Services.ConfigureTaskScheduler(builder.Configuration);
 builder.Services.Configure<RouteOptions>(options => { options.LowercaseUrls = true; });
 
 var app = builder.Build();

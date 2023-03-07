@@ -1,6 +1,7 @@
 using System.Text;
 using Hangfire;
 using Innowise.Clinic.Scheduling.Persistence;
+using Innowise.Clinic.Scheduling.Services.MassTransitService.Consumers;
 using Innowise.Clinic.Scheduling.Services.Options;
 using Innowise.Clinic.Scheduling.Services.ScheduleGenerationService.Implementations;
 using Innowise.Clinic.Scheduling.Services.ScheduleGenerationService.Interfaces;
@@ -26,6 +27,8 @@ public static class ConfigurationExtensions
         var rabbitMqConfig = configuration.GetSection("RabbitConfigurations");
         services.AddMassTransit(x =>
         {
+            x.AddConsumer<TimeSlotReservationRequestConsumer>();
+            x.AddConsumer<TimeSlotUpdateRequestConsumer>();
             x.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host(rabbitMqConfig["HostName"], h =>
