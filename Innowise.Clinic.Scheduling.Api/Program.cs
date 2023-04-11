@@ -8,10 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.ConfigureSecurity();
 builder.Services.ConfigureSwagger(builder.Configuration);
 builder.Services.ConfigureDatabase(builder.Configuration);
+builder.Services.ConfigureRepositories();
 builder.Services.ConfigureServices(builder.Configuration);
 builder.Services.ConfigureTaskScheduler(builder.Configuration);
+builder.Services.ConfigureCrossServiceCommunication(builder.Configuration);
 builder.Services.Configure<RouteOptions>(options => { options.LowercaseUrls = true; });
 
 var app = builder.Build();

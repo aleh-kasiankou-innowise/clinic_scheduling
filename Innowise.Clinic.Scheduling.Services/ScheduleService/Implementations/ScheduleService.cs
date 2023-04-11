@@ -21,8 +21,8 @@ public class ScheduleService : IScheduleService
     {
         return await _dbContext.Schedules
             .Where(x =>
-                x.SpecializationId == specializationId
-                && x.OfficeId == officeId
+                x.Doctor.SpecializationId == specializationId
+                && x.Doctor.OfficeId == officeId
                 && x.Day >= from
                 && x.Day <= to)
             .OrderBy(x => x.Day)

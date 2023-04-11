@@ -1,7 +1,7 @@
-using Innowise.Clinic.Scheduling.Api.Controllers.Abstractions;
 using Innowise.Clinic.Scheduling.Persistence.Models;
 using Innowise.Clinic.Scheduling.Services.Dto;
 using Innowise.Clinic.Scheduling.Services.ShiftService.Interfaces;
+using Innowise.Clinic.Shared.BaseClasses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,18 +41,7 @@ public class ShiftsController : ApiControllerBase
     {
         return Ok(await _shiftService.GetShiftAsync(id));
     }
-    
-    /// <summary>
-    /// Displays doctors shift preference.
-    /// </summary>
-    /// <returns>Info about preferred shift.</returns>
-    [HttpGet("preferences/doctors/{id:guid}")]
-    [Authorize(Roles = "Doctor,Receptionist")]
-    public async Task<ActionResult<ShiftPreference>> GetShiftPreference(Guid id)
-    {
-        return Ok(await _shiftService.GetShiftPreferenceAsync(id));
-    }
-    
+
     /// <summary>
     /// Creates a new shift available for doctors.
     /// </summary>

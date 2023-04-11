@@ -1,7 +1,7 @@
-using Innowise.Clinic.Scheduling.Api.Controllers.Abstractions;
 using Innowise.Clinic.Scheduling.Persistence.Models;
 using Innowise.Clinic.Scheduling.Services.Dto;
 using Innowise.Clinic.Scheduling.Services.ScheduleService.Interfaces;
+using Innowise.Clinic.Shared.BaseClasses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +12,6 @@ namespace Innowise.Clinic.Scheduling.Api.Controllers;
 /// </summary>
 public class ScheduleController : ApiControllerBase
 {
-    // TODO GET SCHEDULE BY DOCTOR / RECEPTIONIST WITH DIFFERENT SETS OF FILTERS
-    // TODO CREATE A FILTER TO LIMIT FILTERS BY ROLE
-
     private readonly IScheduleService _scheduleService;
 
     /// <inheritdoc />

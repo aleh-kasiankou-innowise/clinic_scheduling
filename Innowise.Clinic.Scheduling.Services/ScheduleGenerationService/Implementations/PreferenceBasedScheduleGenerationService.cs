@@ -40,12 +40,15 @@ public class PreferenceBasedScheduleGenerationService : IScheduleGenerationServi
             {
                 foreach (var preference in doctorsPreferences)
                 {
+                    if (preference is null)
+                    {
+                        continue;
+                    }
+
                     if (savedScheduleData.All(x => x.DoctorId != preference.DoctorId && x.Day != i))
                     {
                         generatedSchedule.Add(new()
                         {
-                            SpecializationId = preference.SpecializationId,
-                            OfficeId = preference.OfficeId,
                             DoctorId = preference.DoctorId,
                             Day = i.Date,
                             ShiftId = preference.ShiftId,
@@ -62,7 +65,8 @@ public class PreferenceBasedScheduleGenerationService : IScheduleGenerationServi
     public async Task GenerateScheduleAsync(ScheduleGenerationRequest generationRequest)
     {
         var endGenerationMonth = generationRequest.GenerateFrom.AddMonths(_generationConfig.GenerateForMonths).Month;
-        var doctorPreference = await _shiftService.GetShiftPreferenceAsync(generationRequest.DoctorId);
+        var doctorPreference = await _shiftService.GetShiftPreferenceAsync(generationRequest.DoctorId) ??
+                               throw new ApplicationException("The doctor should save the preferred schedule.");
         var savedScheduleData = await
             _dbContext.Schedules.Where(x =>
                     x.Day >= generationRequest.GenerateFrom.Date && x.Day.Month <= endGenerationMonth &&
@@ -76,8 +80,6 @@ public class PreferenceBasedScheduleGenerationService : IScheduleGenerationServi
             {
                 generatedSchedule.Add(new()
                 {
-                    SpecializationId = doctorPreference.SpecializationId,
-                    OfficeId = doctorPreference.OfficeId,
                     DoctorId = doctorPreference.DoctorId,
                     Day = i.Date,
                     ShiftId = doctorPreference.ShiftId,

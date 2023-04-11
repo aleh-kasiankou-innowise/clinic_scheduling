@@ -22,6 +22,23 @@ namespace Innowise.Clinic.Scheduling.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Innowise.Clinic.Scheduling.Persistence.Models.Doctor", b =>
+                {
+                    b.Property<Guid>("DoctorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OfficeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SpecializationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("DoctorId");
+
+                    b.ToTable("Doctors");
+                });
+
             modelBuilder.Entity("Innowise.Clinic.Scheduling.Persistence.Models.ReservedTimeSlot", b =>
                 {
                     b.Property<Guid>("ReservedTimeSlotId")
@@ -39,6 +56,8 @@ namespace Innowise.Clinic.Scheduling.Persistence.Migrations
 
                     b.HasKey("ReservedTimeSlotId");
 
+                    b.HasIndex("DoctorId");
+
                     b.ToTable("ReservedTimeSlots");
                 });
 
@@ -54,16 +73,12 @@ namespace Innowise.Clinic.Scheduling.Persistence.Migrations
                     b.Property<Guid>("DoctorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OfficeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("ShiftId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("SpecializationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("ScheduleId");
+
+                    b.HasIndex("DoctorId");
 
                     b.HasIndex("ShiftId");
 
@@ -121,38 +136,62 @@ namespace Innowise.Clinic.Scheduling.Persistence.Migrations
                     b.Property<Guid>("DoctorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OfficeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("ShiftId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("SpecializationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("ShiftPreferenceId");
+
+                    b.HasIndex("DoctorId")
+                        .IsUnique();
 
                     b.HasIndex("ShiftId");
 
                     b.ToTable("ShiftPreferences");
                 });
 
+            modelBuilder.Entity("Innowise.Clinic.Scheduling.Persistence.Models.ReservedTimeSlot", b =>
+                {
+                    b.HasOne("Innowise.Clinic.Scheduling.Persistence.Models.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+                });
+
             modelBuilder.Entity("Innowise.Clinic.Scheduling.Persistence.Models.Schedule", b =>
                 {
+                    b.HasOne("Innowise.Clinic.Scheduling.Persistence.Models.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Innowise.Clinic.Scheduling.Persistence.Models.Shift", "Shift")
                         .WithMany()
                         .HasForeignKey("ShiftId");
+
+                    b.Navigation("Doctor");
 
                     b.Navigation("Shift");
                 });
 
             modelBuilder.Entity("Innowise.Clinic.Scheduling.Persistence.Models.ShiftPreference", b =>
                 {
+                    b.HasOne("Innowise.Clinic.Scheduling.Persistence.Models.Doctor", "Doctor")
+                        .WithOne()
+                        .HasForeignKey("Innowise.Clinic.Scheduling.Persistence.Models.ShiftPreference", "DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Innowise.Clinic.Scheduling.Persistence.Models.Shift", "Shift")
                         .WithMany()
                         .HasForeignKey("ShiftId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Doctor");
 
                     b.Navigation("Shift");
                 });

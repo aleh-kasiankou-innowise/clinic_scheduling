@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Innowise.Clinic.Scheduling.Services.ShiftService.Implementations;
 
+// TODO CREATE A SHIFT PREFERENCE SERVICE
+// TODO MOVE DB LOGIC TO A REPO
 public class ShiftService : IShiftService
 {
     private readonly SchedulingDbContext _dbContext;
@@ -20,27 +22,41 @@ public class ShiftService : IShiftService
     {
         return await _dbContext.Shifts.ToListAsync();
     }
-    
+
     public async Task<Shift> GetShiftAsync(Guid id)
     {
         return await GetShiftOrThrowException(id);
     }
 
-    public async Task<ShiftPreference> GetShiftPreferenceAsync(Guid doctorId)
+    public async Task<ShiftPreference?> GetShiftPreferenceAsync(Guid doctorId)
     {
-        return await GetPreferredShiftOrThrowException(doctorId);
+        return await _dbContext
+            .ShiftPreferences
+            .FirstOrDefaultAsync(x => x.DoctorId == doctorId);
     }
 
+    // TODO Does it make sense to return GUID that is never used?
     public async Task<Guid> SetShiftPreferenceAsync(Guid doctorId, Guid shiftId)
     {
-        // TODO ENSURE PREFERENCE IS AUTOMATICALLY SET AFTER PROFILE CREATION
-        throw new NotImplementedException();
+        var savedPreference = await GetShiftPreferenceAsync(doctorId);
+        if (savedPreference is not null)
+        {
+            savedPreference.ShiftId = shiftId;
+            await _dbContext.SaveChangesAsync();
+            return savedPreference.ShiftPreferenceId;
+        }
+
+        var shiftPreference = new ShiftPreference()
+        {
+            DoctorId = doctorId,
+            ShiftId = shiftId,
+        };
+
+        _dbContext.ShiftPreferences.Add(shiftPreference);
+        await _dbContext.SaveChangesAsync();
+        return shiftPreference.ShiftPreferenceId;
     }
 
-    public async Task UpdateShiftPreferenceAsync(Guid doctorId, Guid shiftId)
-    {
-        throw new NotImplementedException();
-    }
 
     public async Task<Guid> CreateShiftAsync(ShiftDto newShiftInfo)
     {
@@ -81,15 +97,5 @@ public class ShiftService : IShiftService
     {
         return await _dbContext.Shifts.FirstOrDefaultAsync(x => x.ShiftId == id) ??
                throw new MissingEntryException($"The shift with id {id} does not exist.");
-    }
-    
-    private async Task<ShiftPreference> GetPreferredShiftOrThrowException(Guid doctorId)
-    {
-        var doctorShiftPreference = await _dbContext.ShiftPreferences.FirstOrDefaultAsync(x => x.DoctorId == doctorId);
-        if (doctorShiftPreference == null)
-        {
-            // TODO IF NULL, SET DEFAULT SHIFT
-        }
-        return doctorShiftPreference;
     }
 }

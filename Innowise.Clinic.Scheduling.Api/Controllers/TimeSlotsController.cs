@@ -1,6 +1,6 @@
-using Innowise.Clinic.Scheduling.Api.Controllers.Abstractions;
 using Innowise.Clinic.Scheduling.Services.Dto;
 using Innowise.Clinic.Scheduling.Services.TimeSlotService.Interfaces;
+using Innowise.Clinic.Shared.BaseClasses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Innowise.Clinic.Scheduling.Api.Controllers;

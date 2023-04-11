@@ -1,6 +1,8 @@
 using System.Text;
 using Hangfire;
 using Innowise.Clinic.Scheduling.Persistence;
+using Innowise.Clinic.Scheduling.Persistence.Repositories.Implementations;
+using Innowise.Clinic.Scheduling.Persistence.Repositories.Interfaces;
 using Innowise.Clinic.Scheduling.Services.MassTransitService.Consumers;
 using Innowise.Clinic.Scheduling.Services.Options;
 using Innowise.Clinic.Scheduling.Services.ScheduleGenerationService.Implementations;
@@ -29,6 +31,7 @@ public static class ConfigurationExtensions
         {
             x.AddConsumer<TimeSlotReservationRequestConsumer>();
             x.AddConsumer<TimeSlotUpdateRequestConsumer>();
+            x.AddConsumer<DoctorChangesConsumer>();
             x.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host(rabbitMqConfig["HostName"], h =>
@@ -53,6 +56,12 @@ public static class ConfigurationExtensions
         services.AddScoped<IScheduleService, ScheduleService>();
         services.AddScoped<IShiftService, ShiftService>();
         services.AddScoped<ITimeSlotService, TimeSlotService>();
+        return services;
+    }
+
+    public static IServiceCollection ConfigureRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IDoctorRepository, DoctorRepository>();
         return services;
     }
 

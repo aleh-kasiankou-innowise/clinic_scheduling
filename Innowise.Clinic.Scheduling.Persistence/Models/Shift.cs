@@ -1,6 +1,8 @@
+using Innowise.Clinic.Shared.BaseClasses;
+
 namespace Innowise.Clinic.Scheduling.Persistence.Models;
 
-public class Shift
+public class Shift : IEntity
 {
     public Guid ShiftId { get; set; }
     public string ShiftName { get; set; }
