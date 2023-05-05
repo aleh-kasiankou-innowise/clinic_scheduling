@@ -12,11 +12,14 @@ namespace Innowise.Clinic.Scheduling.Services.ShiftService.Implementations;
 public class ShiftService : IShiftService
 {
     private readonly SchedulingDbContext _dbContext;
+    private readonly HangfireHelper.HangfireHelper _schedulingHelper;
 
-    public ShiftService(SchedulingDbContext dbContext)
+    public ShiftService(SchedulingDbContext dbContext, HangfireHelper.HangfireHelper schedulingHelper)
     {
         _dbContext = dbContext;
+        this._schedulingHelper = schedulingHelper;
     }
+
 
     public async Task<IEnumerable<Shift>> GetShiftsAsync()
     {
@@ -39,10 +42,12 @@ public class ShiftService : IShiftService
     public async Task<Guid> SetShiftPreferenceAsync(Guid doctorId, Guid shiftId)
     {
         var savedPreference = await GetShiftPreferenceAsync(doctorId);
+        var scheduleGenerationRequest = new ScheduleGenerationRequest(doctorId, DateTime.Today);
         if (savedPreference is not null)
         {
             savedPreference.ShiftId = shiftId;
             await _dbContext.SaveChangesAsync();
+            _schedulingHelper.GenerateScheduleForDoctor(scheduleGenerationRequest);
             return savedPreference.ShiftPreferenceId;
         }
 
@@ -54,6 +59,7 @@ public class ShiftService : IShiftService
 
         _dbContext.ShiftPreferences.Add(shiftPreference);
         await _dbContext.SaveChangesAsync();
+        _schedulingHelper.GenerateScheduleForDoctor(scheduleGenerationRequest);
         return shiftPreference.ShiftPreferenceId;
     }
 

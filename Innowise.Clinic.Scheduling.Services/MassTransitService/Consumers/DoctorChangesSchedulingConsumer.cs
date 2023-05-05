@@ -4,11 +4,11 @@ using MassTransit;
 
 namespace Innowise.Clinic.Scheduling.Services.MassTransitService.Consumers;
 
-public class DoctorChangesConsumer : IConsumer<DoctorAddedOrUpdatedMessage>
+public class DoctorChangesSchedulingConsumer : IConsumer<DoctorAddedOrUpdatedMessage>
 {
     private readonly IDoctorRepository _doctorRepository;
 
-    public DoctorChangesConsumer(IDoctorRepository doctorRepository)
+    public DoctorChangesSchedulingConsumer(IDoctorRepository doctorRepository)
     {
         _doctorRepository = doctorRepository;
     }

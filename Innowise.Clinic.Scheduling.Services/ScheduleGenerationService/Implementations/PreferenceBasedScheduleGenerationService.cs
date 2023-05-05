@@ -69,22 +69,20 @@ public class PreferenceBasedScheduleGenerationService : IScheduleGenerationServi
                                throw new ApplicationException("The doctor should save the preferred schedule.");
         var savedScheduleData = await
             _dbContext.Schedules.Where(x =>
-                    x.Day >= generationRequest.GenerateFrom.Date && x.Day.Month <= endGenerationMonth &&
-                    x.DoctorId == generationRequest.DoctorId)
-                .Select(e => e.Day.Date).ToListAsync();
+                x.Day >= generationRequest.GenerateFrom.Date && x.Day.Month <= endGenerationMonth &&
+                x.DoctorId == generationRequest.DoctorId).ToListAsync();
 
+        _dbContext.Schedules.RemoveRange(savedScheduleData);
+        
         var generatedSchedule = new List<Schedule>();
         for (var i = generationRequest.GenerateFrom; i.Month <= endGenerationMonth; i = i.AddDays(1))
         {
-            if (!savedScheduleData.Contains(i.Date))
+            generatedSchedule.Add(new()
             {
-                generatedSchedule.Add(new()
-                {
-                    DoctorId = doctorPreference.DoctorId,
-                    Day = i.Date,
-                    ShiftId = doctorPreference.ShiftId,
-                });
-            }
+                DoctorId = doctorPreference.DoctorId,
+                Day = i.Date,
+                ShiftId = doctorPreference.ShiftId,
+            });
         }
 
         await _dbContext.Schedules.AddRangeAsync(generatedSchedule);

@@ -3,6 +3,7 @@ using Hangfire;
 using Innowise.Clinic.Scheduling.Persistence;
 using Innowise.Clinic.Scheduling.Persistence.Repositories.Implementations;
 using Innowise.Clinic.Scheduling.Persistence.Repositories.Interfaces;
+using Innowise.Clinic.Scheduling.Services.HangfireHelper;
 using Innowise.Clinic.Scheduling.Services.MassTransitService.Consumers;
 using Innowise.Clinic.Scheduling.Services.Options;
 using Innowise.Clinic.Scheduling.Services.ScheduleGenerationService.Implementations;
@@ -18,6 +19,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Sinks.Elasticsearch;
 
 namespace Innowise.Clinic.Scheduling.Api.Configuration;
 
@@ -31,7 +34,7 @@ public static class ConfigurationExtensions
         {
             x.AddConsumer<TimeSlotReservationRequestConsumer>();
             x.AddConsumer<TimeSlotUpdateRequestConsumer>();
-            x.AddConsumer<DoctorChangesConsumer>();
+            x.AddConsumer<DoctorChangesSchedulingConsumer>();
             x.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host(rabbitMqConfig["HostName"], h =>
@@ -52,6 +55,7 @@ public static class ConfigurationExtensions
         services.Configure<WorkingDayConfigOptions>(
             configuration.GetSection("ScheduleConfiguration"));
 
+        services.AddSingleton<HangfireHelper>();
         services.AddScoped<IScheduleGenerationService, PreferenceBasedScheduleGenerationService>();
         services.AddScoped<IScheduleService, ScheduleService>();
         services.AddScoped<IShiftService, ShiftService>();
@@ -130,5 +134,26 @@ public static class ConfigurationExtensions
             });
         });
         return services;
+    }
+    
+    public static WebApplicationBuilder ConfigureSerilog(this WebApplicationBuilder builder)
+    {
+        var logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(builder.Configuration)
+            .Enrich.FromLogContext()
+            .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(builder.Configuration["ElasticSearchHost"]))
+            {
+                AutoRegisterTemplate = true,
+                OverwriteTemplate = true,
+                IndexFormat = $"clinic.scheduling-{0:yy.MM}",
+                BatchAction = ElasticOpType.Index,
+                DetectElasticsearchVersion = true,
+            })
+            .WriteTo.Console()
+            .CreateLogger();
+
+        Log.Logger = logger;
+        builder.Host.UseSerilog(logger);
+        return builder;
     }
 }

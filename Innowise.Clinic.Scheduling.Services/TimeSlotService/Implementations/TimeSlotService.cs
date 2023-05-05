@@ -24,10 +24,11 @@ public class TimeSlotService : ITimeSlotService
     public async Task<IEnumerable<FreeTimeSlotDto>> GetFreeTimeSlots(Guid doctorId, DateTime appointmentDay,
         TimeSpan appointmentDuration)
     {
-        var reservedTimeSlots = await GetReservedTimeSlotsAsync(doctorId, appointmentDay);
-        var doctorSchedule = await GetDoctorSchedule(doctorId, appointmentDay);
-        var lunchStart = appointmentDay + doctorSchedule.LunchStart;
-        var shiftStart = appointmentDay + doctorSchedule.ShiftStart;
+        var appointmentDayDate = appointmentDay.Date;
+        var reservedTimeSlots = await GetReservedTimeSlotsAsync(doctorId, appointmentDayDate);
+        var doctorSchedule = await GetDoctorSchedule(doctorId, appointmentDayDate);
+        var lunchStart = appointmentDayDate + doctorSchedule.LunchStart;
+        var shiftStart = appointmentDayDate + doctorSchedule.ShiftStart;
         var shiftEnd = (shiftStart + doctorSchedule.WorkingHours).AddMinutes(_workingDayConfig.LunchDurationInMinutes);
         return CalculateFreeTimeSlots(shiftStart, shiftEnd, lunchStart, appointmentDuration, reservedTimeSlots);
     }

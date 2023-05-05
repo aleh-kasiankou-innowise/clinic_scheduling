@@ -3,6 +3,7 @@ using Innowise.Clinic.Scheduling.Api.Configuration;
 using Innowise.Clinic.Scheduling.Persistence;
 using Innowise.Clinic.Scheduling.Services.HangfireService;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.ConfigureServices(builder.Configuration);
 builder.Services.ConfigureTaskScheduler(builder.Configuration);
 builder.Services.ConfigureCrossServiceCommunication(builder.Configuration);
 builder.Services.Configure<RouteOptions>(options => { options.LowercaseUrls = true; });
+builder.ConfigureSerilog();
 
 var app = builder.Build();
 
@@ -41,4 +43,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+Log.Information("The Scheduling service is starting");
 app.Run();
+Log.Information("The scheduling service is stopping");
+await Log.CloseAndFlushAsync();
